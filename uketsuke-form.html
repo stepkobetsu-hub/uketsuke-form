@@ -7,33 +7,32 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --sky: #2BA8D8; --sky-dark: #1A86B3; --sky-light: #E6F6FD;
-    --accent: #FF7A2F; --green: #27AE60; --red: #E74C3C;
-    --navy: #1A3A52; --text: #2C3E50; --muted: #6B8FA8;
-    --border: #C5E0EE; --bg: #EBF7FC; --card: #FFFFFF;
-    --radius: 14px; --shadow: 0 2px 18px rgba(43,168,216,0.12);
+    --grn: #27AE60; --grn-dark: #1E8449; --grn-light: #EAF6EE;
+    --grn-mid: #A9DFBF; --accent: #FF7A2F; --red: #E74C3C;
+    --navy: #1A3A2A; --text: #2C3E30; --muted: #6B8F78;
+    --border: #A9DFBF; --bg: #EAF6EE; --card: #FFFFFF;
+    --radius: 14px; --shadow: 0 2px 18px rgba(39,174,96,0.12);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  ::placeholder { color: #B0C8D8 !important; }
+  ::placeholder { color: #A9DFBF !important; }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  .header { background: linear-gradient(135deg, var(--sky), var(--sky-dark)); padding: 24px 20px 20px; text-align: center; }
+  .header { background: linear-gradient(135deg, var(--grn), var(--grn-dark)); padding: 24px 20px 20px; text-align: center; }
   .header-badge { display: inline-block; background: rgba(255,255,255,0.25); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
   .header h1 { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
   .header p { color: rgba(255,255,255,0.85); font-size: 12px; }
 
-  /* Progress */
-  .progress-wrap { background: linear-gradient(135deg, var(--sky-dark), #1260A0); padding: 0 20px 16px; }
+  .progress-wrap { background: linear-gradient(135deg, var(--grn-dark), #145A32); padding: 0 20px 16px; }
   .progress-steps { display: flex; align-items: center; max-width: 500px; margin: 0 auto; }
   .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
   .step-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.45); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
   .step-item.active .step-circle { border-color: #fff; color: #fff; background: rgba(255,255,255,0.2); box-shadow: 0 0 0 4px rgba(255,255,255,0.15); }
-  .step-item.done .step-circle { border-color: #7FDDFF; background: #7FDDFF; color: var(--navy); }
+  .step-item.done .step-circle { border-color: #7DCEA0; background: #7DCEA0; color: var(--navy); }
   .step-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 4px; white-space: nowrap; }
   .step-item.active .step-label { color: #fff; }
   .step-item.done .step-label { color: rgba(255,255,255,0.8); }
   .step-line { flex: 1; height: 2px; background: rgba(255,255,255,0.2); margin: 0 4px 16px; transition: background 0.3s; }
-  .step-line.done { background: #7FDDFF; }
+  .step-line.done { background: #7DCEA0; }
 
   .container { max-width: 600px; margin: 0 auto; padding: 20px 16px 48px; }
 
@@ -41,8 +40,15 @@
   .section-card.active { display: block; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-  .section-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--sky-light); display: flex; align-items: center; gap: 8px; }
-  .section-title .icon { background: var(--sky-light); color: var(--sky); width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .section-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--grn-light); display: flex; align-items: center; gap: 8px; }
+  .section-title .icon { background: var(--grn-light); color: var(--grn); width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+
+  /* 兄弟セクション */
+  .sibling-section { margin-top: 20px; padding-top: 20px; border-top: 2px dashed var(--grn-mid); display: none; }
+  .sibling-section.show { display: block; }
+  .sibling-title { font-size: 14px; font-weight: 700; color: var(--grn-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .btn-sibling-add { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--grn-light); color: var(--grn-dark); border: 1.5px solid var(--grn-mid); border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; margin-top: 8px; }
+  .btn-sibling-remove { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: #FEF9F9; color: var(--red); border: 1.5px solid #FADBD8; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; margin-bottom: 12px; }
 
   .field { margin-bottom: 18px; }
   .field label { display: block; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
@@ -53,89 +59,79 @@
   .field input[type="text"], .field input[type="tel"], .field select, .field textarea {
     width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px;
     font-family: 'Noto Sans JP', sans-serif; font-size: 15px; color: var(--text);
-    background: #F8FCFF; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none;
+    background: #F6FDF8; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none;
   }
-  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--sky); box-shadow: 0 0 0 3px rgba(43,168,216,0.18); background: #fff; }
-  .field input.error, .field select.error, .field textarea.error { border-color: var(--red); }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--grn); box-shadow: 0 0 0 3px rgba(39,174,96,0.18); background: #fff; }
+  .field input.error, .field select.error { border-color: var(--red); }
   .field .err-msg { font-size: 12px; color: var(--red); margin-top: 4px; display: none; }
   .field .err-msg.show { display: block; }
-  .field textarea { resize: none; height: 80px; }
 
-  /* Radio */
   .radio-group { display: flex; gap: 12px; }
   .radio-btn { flex: 1; }
   .radio-btn input { display: none; }
-  .radio-btn label { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--muted); background: #F8FCFF; transition: all 0.2s; margin-bottom: 0; }
-  .radio-btn input:checked + label { border-color: var(--sky); background: var(--sky-light); color: var(--sky-dark); box-shadow: 0 0 0 3px rgba(43,168,216,0.15); }
+  .radio-btn label { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--muted); background: #F6FDF8; transition: all 0.2s; margin-bottom: 0; }
+  .radio-btn input:checked + label { border-color: var(--grn); background: var(--grn-light); color: var(--grn-dark); box-shadow: 0 0 0 3px rgba(39,174,96,0.15); }
 
-  /* Checkbox */
   .check-group { display: flex; flex-direction: column; gap: 8px; }
   .check-btn input { display: none; }
-  .check-btn label { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--text); background: #F8FCFF; transition: all 0.2s; }
-  .check-btn label::before { content: ''; width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 5px; flex-shrink: 0; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-  .check-btn input:checked + label { border-color: var(--sky); background: var(--sky-light); color: var(--sky-dark); }
-  .check-btn input:checked + label::before { background: var(--sky); border-color: var(--sky); content: '✓'; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .check-btn label { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--text); background: #F6FDF8; transition: all 0.2s; }
+  .check-btn label::before { content: ''; width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 5px; flex-shrink: 0; transition: all 0.2s; }
+  .check-btn input:checked + label { border-color: var(--grn); background: var(--grn-light); color: var(--grn-dark); }
+  .check-btn input:checked + label::before { background: var(--grn); border-color: var(--grn); content: '✓'; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 
-  /* Date picker */
   .date-picker { display: flex; gap: 8px; }
   .date-picker-part { flex: 1; }
   .date-picker-part > .part-label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; text-align: center; }
-  .drum-picker { position: relative; height: 46px; overflow: hidden; border: 1.5px solid var(--border); border-radius: 8px; background: #F8FCFF; cursor: pointer; }
-  .drum-picker:focus-within { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(43,168,216,0.18); }
+  .drum-picker { position: relative; height: 46px; overflow: hidden; border: 1.5px solid var(--border); border-radius: 8px; background: #F6FDF8; cursor: pointer; }
+  .drum-picker:focus-within { border-color: var(--grn); box-shadow: 0 0 0 3px rgba(39,174,96,0.18); }
   .drum-picker select { position: absolute; top:0;left:0;width:100%;height:100%; opacity:0; cursor:pointer; font-size:16px; }
   .drum-display { display: flex; align-items: center; justify-content: center; height: 100%; font-size: 15px; font-weight: 500; color: var(--text); pointer-events: none; }
   .drum-display.placeholder { color: var(--muted); font-size: 13px; }
   .wareki-label { font-size: 11px; color: var(--muted); margin-top: 4px; text-align: center; min-height: 16px; }
 
-  /* Select wrap */
   .select-wrap { position: relative; }
   .select-wrap::after { content:'▾'; position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
   .select-wrap select { padding-right: 36px; cursor: pointer; }
 
-  /* School */
-  .drum-picker-school { position: relative; height: 46px; overflow: hidden; border: 1.5px solid var(--border); border-radius: 8px; background: #F8FCFF; cursor: pointer; }
+  .drum-picker-school { position: relative; height: 46px; overflow: hidden; border: 1.5px solid var(--border); border-radius: 8px; background: #F6FDF8; cursor: pointer; }
   .drum-picker-school select { position: absolute; top:0;left:0;width:100%;height:100%; opacity:0; cursor:pointer; font-size:16px; }
   .drum-display-school { display: flex; align-items: center; justify-content: center; height: 100%; font-size: 15px; font-weight: 500; color: var(--muted); pointer-events: none; padding: 0 14px; }
   .drum-display-school.selected { color: var(--text); }
 
-  /* ZIP */
   .zip-row { display: flex; gap: 10px; }
   .zip-row input { flex: 1; }
-  .zip-btn { padding: 12px 16px; background: var(--sky); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; font-family: 'Noto Sans JP', sans-serif; }
+  .zip-btn { padding: 12px 16px; background: var(--grn); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; font-family: 'Noto Sans JP', sans-serif; }
   .zip-btn:disabled { background: var(--muted); cursor: not-allowed; }
   .zip-status { font-size: 12px; margin-top: 4px; }
-  .zip-status.ok { color: var(--green); }
+  .zip-status.ok { color: var(--grn); }
   .zip-status.ng { color: var(--red); }
 
-  /* Nav */
   .nav-btns { display: flex; gap: 12px; margin-top: 24px; }
   .btn-back { flex: 1; padding: 14px; background: #fff; border: 2px solid var(--border); border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: var(--muted); cursor: pointer; }
-  .btn-next { flex: 2; padding: 14px; background: linear-gradient(135deg, var(--sky), var(--sky-dark)); border: none; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(43,168,216,0.4); }
-  .btn-submit { flex: 2; padding: 14px; background: linear-gradient(135deg, #27AE60, #1E8449); border: none; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(39,174,96,0.4); }
+  .btn-next { flex: 2; padding: 14px; background: linear-gradient(135deg, var(--grn), var(--grn-dark)); border: none; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(39,174,96,0.4); }
+  .btn-submit { flex: 2; padding: 14px; background: linear-gradient(135deg, #2980B9, #1A5276); border: none; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(41,128,185,0.4); }
   .btn-submit:disabled { background: var(--muted); box-shadow: none; cursor: not-allowed; }
 
-  /* Confirm */
   .review-group { margin-bottom: 20px; }
-  .review-group-title { font-size: 11px; font-weight: 700; color: var(--sky); letter-spacing: 0.08em; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .review-group-title { font-size: 11px; font-weight: 700; color: var(--grn); letter-spacing: 0.08em; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
   .confirm-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  .confirm-table tr { border-bottom: 1px solid #EBF7FC; }
+  .confirm-table tr { border-bottom: 1px solid var(--grn-light); }
   .confirm-table td { padding: 9px 4px; vertical-align: top; }
   .confirm-table td:first-child { color: var(--muted); font-size: 12px; width: 110px; padding-right: 8px; white-space: nowrap; }
   .confirm-table td:last-child { font-weight: 500; word-break: break-all; }
 
-  .note { background: var(--sky-light); border-left: 3px solid var(--sky); border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 12px; color: var(--sky-dark); margin-bottom: 18px; line-height: 1.7; }
+  .note { background: var(--grn-light); border-left: 3px solid var(--grn); border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 12px; color: var(--grn-dark); margin-bottom: 18px; line-height: 1.7; }
 
   .loading { display: none; text-align: center; padding: 24px; }
-  .spinner { width: 34px; height: 34px; border: 3px solid #B3E3F5; border-top-color: var(--sky); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+  .spinner { width: 34px; height: 34px; border: 3px solid var(--grn-mid); border-top-color: var(--grn); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
   @keyframes spin { to{transform:rotate(360deg)} }
 
   .success-page { text-align: center; padding: 48px 20px; display: none; }
   .success-page.show { display: block; }
   .success-icon { font-size: 72px; margin-bottom: 16px; animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1); display: block; }
   @keyframes pop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
-  .success-page h2 { font-size: 22px; color: var(--sky-dark); margin-bottom: 12px; }
+  .success-page h2 { font-size: 22px; color: var(--grn-dark); margin-bottom: 12px; }
   .success-page p { color: var(--muted); font-size: 14px; line-height: 1.9; }
-  .btn-again { margin-top: 24px; padding: 14px 32px; background: linear-gradient(135deg, var(--sky), var(--sky-dark)); border: none; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; }
 
   @media(max-width:400px){ .header h1{font-size:17px} .section-card{padding:16px 12px} }
 </style>
@@ -162,7 +158,7 @@
 
 <div class="container">
 
-  <!-- STEP 1: 生徒情報 -->
+  <!-- STEP 1 -->
   <div class="section-card active" id="step-1">
     <div class="section-title"><span class="icon">👦</span>生徒情報</div>
 
@@ -171,13 +167,11 @@
       <input type="text" id="name" placeholder="例：館 奏太">
       <div class="err-msg" id="err-name">氏名を入力してください</div>
     </div>
-
     <div class="field">
       <label>ふりがな<span class="req">必須</span></label>
       <input type="text" id="kana" placeholder="例：たち かなた">
       <div class="err-msg" id="err-kana">ふりがなを入力してください</div>
     </div>
-
     <div class="field">
       <label>性別<span class="req">必須</span></label>
       <div class="radio-group">
@@ -186,7 +180,6 @@
       </div>
       <div class="err-msg" id="err-gender">性別を選択してください</div>
     </div>
-
     <div class="field">
       <label>生年月日<span class="req">必須</span></label>
       <div class="date-picker">
@@ -206,7 +199,6 @@
       </div>
       <div class="err-msg" id="err-birthdate">生年月日を選択してください</div>
     </div>
-
     <div class="field">
       <label>学年<span class="req">必須</span></label>
       <div class="select-wrap">
@@ -219,7 +211,6 @@
       </div>
       <div class="err-msg" id="err-grade">学年を選択してください</div>
     </div>
-
     <div class="field">
       <label>在学学校<span class="req">必須</span></label>
       <div class="drum-picker-school">
@@ -250,10 +241,104 @@
       </div>
       <div class="err-msg" id="err-school">在学学校を選択してください</div>
     </div>
-
     <div class="field">
       <label>部活・習い事<span class="opt">任意</span></label>
       <input type="text" id="club" placeholder="例：サッカー、書道">
+    </div>
+
+    <!-- 兄弟姉妹追加ボタン -->
+    <button class="btn-sibling-add" type="button" onclick="toggleSibling()">
+      <span id="sibling-btn-icon">＋</span> ご兄弟・姉妹のご登録
+    </button>
+
+    <!-- 兄弟姉妹セクション -->
+    <div class="sibling-section" id="sibling-section">
+      <div class="sibling-title">👫 ご兄弟・姉妹の情報</div>
+      <button class="btn-sibling-remove" type="button" onclick="toggleSibling()">✕ 兄弟・姉妹の登録をやめる</button>
+
+      <div class="field">
+        <label>氏名<span class="req">必須</span></label>
+        <input type="text" id="sib-name" placeholder="例：館 花子">
+        <div class="err-msg" id="err-sib-name">氏名を入力してください</div>
+      </div>
+      <div class="field">
+        <label>ふりがな<span class="req">必須</span></label>
+        <input type="text" id="sib-kana" placeholder="例：たち はなこ">
+        <div class="err-msg" id="err-sib-kana">ふりがなを入力してください</div>
+      </div>
+      <div class="field">
+        <label>性別<span class="req">必須</span></label>
+        <div class="radio-group">
+          <div class="radio-btn"><input type="radio" name="sib-gender" id="sg-m" value="男"><label for="sg-m">男</label></div>
+          <div class="radio-btn"><input type="radio" name="sib-gender" id="sg-f" value="女"><label for="sg-f">女</label></div>
+        </div>
+        <div class="err-msg" id="err-sib-gender">性別を選択してください</div>
+      </div>
+      <div class="field">
+        <label>生年月日<span class="req">必須</span></label>
+        <div class="date-picker">
+          <div class="date-picker-part" style="flex:1.4">
+            <span class="part-label">年</span>
+            <div class="drum-picker"><select id="sib-sel-year" onchange="updateSibDrum('year')"><option value="">選択</option></select><div class="drum-display placeholder" id="sib-disp-year">年を選ぶ</div></div>
+            <div class="wareki-label" id="sib-wareki-label"></div>
+          </div>
+          <div class="date-picker-part" style="flex:0.7">
+            <span class="part-label">月</span>
+            <div class="drum-picker"><select id="sib-sel-month" onchange="updateSibDrum('month')"><option value="">月</option></select><div class="drum-display placeholder" id="sib-disp-month">月</div></div>
+          </div>
+          <div class="date-picker-part" style="flex:0.7">
+            <span class="part-label">日</span>
+            <div class="drum-picker"><select id="sib-sel-day" onchange="updateSibDrum('day')"><option value="">日</option></select><div class="drum-display placeholder" id="sib-disp-day">日</div></div>
+          </div>
+        </div>
+        <div class="err-msg" id="err-sib-birthdate">生年月日を選択してください</div>
+      </div>
+      <div class="field">
+        <label>学年<span class="req">必須</span></label>
+        <div class="select-wrap">
+          <select id="sib-grade">
+            <option value="">選択してください</option>
+            <optgroup label="小学校"><option>小１</option><option>小２</option><option>小３</option><option>小４</option><option>小５</option><option>小６</option></optgroup>
+            <optgroup label="中学校"><option>中１</option><option>中２</option><option>中３</option></optgroup>
+            <optgroup label="高校"><option>高１</option><option>高２</option><option>高３</option></optgroup>
+          </select>
+        </div>
+        <div class="err-msg" id="err-sib-grade">学年を選択してください</div>
+      </div>
+      <div class="field">
+        <label>在学学校<span class="req">必須</span></label>
+        <div class="drum-picker-school">
+          <select id="sib-schoolSelect" onchange="onSibSchoolSelect()">
+            <option value="">選択してください</option>
+            <optgroup label="小学校">
+              <option>神領小</option><option>北城小</option><option>下志段味小</option><option>上志段味小</option>
+              <option>志段味東小</option><option>出川小</option><option>大城小</option><option>不二小</option>
+              <option>篠木小</option><option>鷹来小</option><option>岩成台小</option><option>本庄小</option>
+              <option>西山小</option><option>松原小</option><option>丸田小</option><option>大手小</option>
+              <option>牛山小</option><option>春日井小</option>
+            </optgroup>
+            <optgroup label="中学校">
+              <option>南城中</option><option>高蔵寺中</option><option>志段味中</option><option>吉根中</option>
+              <option>坂下中</option><option>石尾台中</option><option>東部中</option><option>鷹来中</option><option>西部中</option>
+            </optgroup>
+            <optgroup label="高校">
+              <option>春日井高校</option><option>高蔵寺高校</option><option>春日井南高校</option>
+              <option>春日井西高校</option><option>春日井東高校</option><option>春日丘高校</option>
+            </optgroup>
+            <option value="その他">その他（自由入力）</option>
+          </select>
+          <div class="drum-display-school" id="sib-disp-school">タップして選択</div>
+        </div>
+        <input type="hidden" id="sib-school" value="">
+        <div id="sib-schoolOtherWrap" style="display:none;margin-top:8px;">
+          <input type="text" id="sib-schoolOther" placeholder="学校名を入力" oninput="onSibSchoolOtherInput()">
+        </div>
+        <div class="err-msg" id="err-sib-school">在学学校を選択してください</div>
+      </div>
+      <div class="field">
+        <label>部活・習い事<span class="opt">任意</span></label>
+        <input type="text" id="sib-club" placeholder="例：バスケ、ピアノ">
+      </div>
     </div>
 
     <div class="nav-btns">
@@ -261,7 +346,7 @@
     </div>
   </div>
 
-  <!-- STEP 2: 連絡先 -->
+  <!-- STEP 2 -->
   <div class="section-card" id="step-2">
     <div class="section-title"><span class="icon">📍</span>連絡先・住所</div>
 
@@ -274,19 +359,16 @@
       <div class="zip-status" id="zipStatus"></div>
       <div class="err-msg" id="err-zip">7桁の郵便番号を入力してください</div>
     </div>
-
     <div class="field">
       <label>住所<span class="req">必須</span></label>
       <input type="text" id="address" placeholder="例：春日井市神領町3-3-9">
       <div class="err-msg" id="err-address">住所を入力してください</div>
     </div>
-
     <div class="field">
       <label>電話番号<span class="req">必須</span></label>
       <input type="tel" id="phone" placeholder="例：090-1234-5678" inputmode="numeric" maxlength="13" oninput="formatPhone(this)">
       <div class="err-msg" id="err-phone">電話番号を入力してください</div>
     </div>
-
     <div class="field">
       <label>希望コース<span class="req">必須</span></label>
       <div class="radio-group">
@@ -302,7 +384,7 @@
     </div>
   </div>
 
-  <!-- STEP 3: アンケート -->
+  <!-- STEP 3 -->
   <div class="section-card" id="step-3">
     <div class="section-title"><span class="icon">📝</span>アンケート</div>
     <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">ご入塾とは関係ございません。ご協力をお願いします。</p>
@@ -347,6 +429,8 @@
         <div class="check-btn"><input type="checkbox" id="rs-6" value="場所が近い（交通の便がいい）から"><label for="rs-6">場所が近い（交通の便がいい）から</label></div>
         <div class="check-btn"><input type="checkbox" id="rs-7" value="5科目対応だから"><label for="rs-7">5科目対応だから</label></div>
         <div class="check-btn"><input type="checkbox" id="rs-8" value="テスト対策が充実していそうだから"><label for="rs-8">テスト対策が充実していそうだから</label></div>
+        <div class="check-btn"><input type="checkbox" id="rs-9" value="マイクラやロブロックスが好きだから"><label for="rs-9">マイクラやロブロックスが好きだから</label></div>
+        <div class="check-btn"><input type="checkbox" id="rs-10" value="プログラミングは将来役立ちそうだから"><label for="rs-10">プログラミングは将来役立ちそうだから</label></div>
       </div>
     </div>
 
@@ -356,7 +440,7 @@
     </div>
   </div>
 
-  <!-- STEP 4: 確認 -->
+  <!-- STEP 4 -->
   <div class="section-card" id="step-4">
     <div class="section-title"><span class="icon">📋</span>入力内容の確認</div>
     <div class="note">内容をご確認の上、「登録する」ボタンを押してください。</div>
@@ -377,10 +461,18 @@
   <span class="success-icon">✅</span>
   <h2>受付カードの登録が完了しました。</h2>
   <p>ご協力ありがとうございました。<br>個別指導ステップ スタッフが確認いたします。</p>
-  <button class="btn-again" onclick="location.reload()">続けて別の方を登録する</button>
 </div>
 
 <script>
+// ===== 兄弟フラグ =====
+let hasSibling = false;
+
+function toggleSibling() {
+  hasSibling = !hasSibling;
+  document.getElementById('sibling-section').classList.toggle('show', hasSibling);
+  document.getElementById('sibling-btn-icon').textContent = hasSibling ? '−' : '＋';
+}
+
 // ===== 和暦変換 =====
 function toWareki(year) {
   if (year >= 2019) return '令和' + (year - 2018) + '年';
@@ -391,49 +483,59 @@ function toWareki(year) {
 
 // ===== 年選択初期化 =====
 (function() {
-  const ySel = document.getElementById('sel-year');
-  const mSel = document.getElementById('sel-month');
   const cur = new Date().getFullYear();
-  for (let y = cur - 3; y >= cur - 22; y--) {
-    const o = document.createElement('option');
-    o.value = y;
-    o.textContent = y + '年（' + toWareki(y) + '）';
-    ySel.appendChild(o);
-  }
-  for (let m = 1; m <= 12; m++) {
-    const o = document.createElement('option');
-    o.value = m; o.textContent = m + '月'; mSel.appendChild(o);
-  }
-  updateDays();
+  ['sel-year', 'sib-sel-year'].forEach(id => {
+    const sel = document.getElementById(id);
+    for (let y = cur - 3; y >= cur - 22; y--) {
+      const o = document.createElement('option');
+      o.value = y;
+      o.textContent = y + '年（' + toWareki(y) + '）';
+      sel.appendChild(o);
+    }
+  });
+  ['sel-month', 'sib-sel-month'].forEach(id => {
+    const sel = document.getElementById(id);
+    for (let m = 1; m <= 12; m++) {
+      const o = document.createElement('option');
+      o.value = m; o.textContent = m + '月'; sel.appendChild(o);
+    }
+  });
+  updateDays(); updateSibDays();
 })();
 
 function updateDrum(type) {
   const sel = document.getElementById('sel-' + type);
   const disp = document.getElementById('disp-' + type);
   const val = sel.value;
-  if (!val) {
-    disp.className = 'drum-display placeholder';
-    disp.textContent = {year:'年を選ぶ', month:'月', day:'日'}[type];
-  } else {
+  if (!val) { disp.className = 'drum-display placeholder'; disp.textContent = {year:'年を選ぶ', month:'月', day:'日'}[type]; }
+  else {
     disp.className = 'drum-display';
-    if (type === 'year') {
-      disp.textContent = val + '年';
-      document.getElementById('wareki-label').textContent = '（' + toWareki(parseInt(val)) + '）';
-    } else {
-      disp.textContent = val + {month:'月', day:'日'}[type];
-    }
+    if (type === 'year') { disp.textContent = val + '年'; document.getElementById('wareki-label').textContent = '（' + toWareki(parseInt(val)) + '）'; }
+    else disp.textContent = val + {month:'月', day:'日'}[type];
   }
   if (type === 'year' || type === 'month') updateDays();
+}
+
+function updateSibDrum(type) {
+  const sel = document.getElementById('sib-sel-' + type);
+  const disp = document.getElementById('sib-disp-' + type);
+  const val = sel.value;
+  if (!val) { disp.className = 'drum-display placeholder'; disp.textContent = {year:'年を選ぶ', month:'月', day:'日'}[type]; }
+  else {
+    disp.className = 'drum-display';
+    if (type === 'year') { disp.textContent = val + '年'; document.getElementById('sib-wareki-label').textContent = '（' + toWareki(parseInt(val)) + '）'; }
+    else disp.textContent = val + {month:'月', day:'日'}[type];
+  }
+  if (type === 'year' || type === 'month') updateSibDays();
 }
 
 function updateDays() {
   const y = parseInt(document.getElementById('sel-year').value) || 2010;
   const m = parseInt(document.getElementById('sel-month').value) || 1;
-  const days = new Date(y, m, 0).getDate();
   const dSel = document.getElementById('sel-day');
   const cur = dSel.value;
   dSel.innerHTML = '<option value="">日</option>';
-  for (let d = 1; d <= days; d++) {
+  for (let d = 1; d <= new Date(y,m,0).getDate(); d++) {
     const o = document.createElement('option');
     o.value = d; o.textContent = d + '日';
     if (d == cur) o.selected = true;
@@ -442,60 +544,64 @@ function updateDays() {
   updateDrum('day');
 }
 
-function getBirthdate() {
-  const y = document.getElementById('sel-year').value;
-  const m = document.getElementById('sel-month').value;
-  const d = document.getElementById('sel-day').value;
+function updateSibDays() {
+  const y = parseInt(document.getElementById('sib-sel-year').value) || 2010;
+  const m = parseInt(document.getElementById('sib-sel-month').value) || 1;
+  const dSel = document.getElementById('sib-sel-day');
+  const cur = dSel.value;
+  dSel.innerHTML = '<option value="">日</option>';
+  for (let d = 1; d <= new Date(y,m,0).getDate(); d++) {
+    const o = document.createElement('option');
+    o.value = d; o.textContent = d + '日';
+    if (d == cur) o.selected = true;
+    dSel.appendChild(o);
+  }
+  updateSibDrum('day');
+}
+
+function getBirthdate(prefix) {
+  const p = prefix ? prefix + '-' : '';
+  const y = document.getElementById(p + 'sel-year').value;
+  const m = document.getElementById(p + 'sel-month').value;
+  const d = document.getElementById(p + 'sel-day').value;
   if (!y || !m || !d) return '';
   return y + '年' + m + '月' + d + '日';
 }
 
-function getBirthdateDisplay() {
-  const y = document.getElementById('sel-year').value;
-  const m = document.getElementById('sel-month').value;
-  const d = document.getElementById('sel-day').value;
+function getBirthdateDisplay(prefix) {
+  const p = prefix ? prefix + '-' : '';
+  const y = document.getElementById(p + 'sel-year').value;
+  const m = document.getElementById(p + 'sel-month').value;
+  const d = document.getElementById(p + 'sel-day').value;
   if (!y || !m || !d) return '';
   return y + '年（' + toWareki(parseInt(y)) + '）' + m + '月' + d + '日';
 }
 
 // ===== 学校選択 =====
 function onSchoolSelect() {
-  const sel = document.getElementById('schoolSelect');
-  const val = sel.value;
+  const val = document.getElementById('schoolSelect').value;
   const disp = document.getElementById('disp-school');
-  if (!val) {
-    disp.className = 'drum-display-school';
-    disp.textContent = 'タップして選択';
-    document.getElementById('school').value = '';
-    document.getElementById('schoolOtherWrap').style.display = 'none';
-  } else if (val === 'その他') {
-    disp.className = 'drum-display-school selected';
-    disp.textContent = 'その他';
-    document.getElementById('school').value = '';
-    document.getElementById('schoolOtherWrap').style.display = 'block';
-  } else {
-    disp.className = 'drum-display-school selected';
-    disp.textContent = val;
-    document.getElementById('school').value = val;
-    document.getElementById('schoolOtherWrap').style.display = 'none';
-    clearErr('school');
-  }
+  if (!val) { disp.className='drum-display-school'; disp.textContent='タップして選択'; document.getElementById('school').value=''; document.getElementById('schoolOtherWrap').style.display='none'; }
+  else if (val === 'その他') { disp.className='drum-display-school selected'; disp.textContent='その他'; document.getElementById('school').value=''; document.getElementById('schoolOtherWrap').style.display='block'; }
+  else { disp.className='drum-display-school selected'; disp.textContent=val; document.getElementById('school').value=val; document.getElementById('schoolOtherWrap').style.display='none'; clearErr('school'); }
 }
-function onSchoolOtherInput() {
-  const v = document.getElementById('schoolOther').value.trim();
-  document.getElementById('school').value = v;
-  if (v) clearErr('school');
-}
+function onSchoolOtherInput() { const v=document.getElementById('schoolOther').value.trim(); document.getElementById('school').value=v; if(v) clearErr('school'); }
 
-// ===== きっかけ：紹介者欄の表示切替 =====
+function onSibSchoolSelect() {
+  const val = document.getElementById('sib-schoolSelect').value;
+  const disp = document.getElementById('sib-disp-school');
+  if (!val) { disp.className='drum-display-school'; disp.textContent='タップして選択'; document.getElementById('sib-school').value=''; document.getElementById('sib-schoolOtherWrap').style.display='none'; }
+  else if (val === 'その他') { disp.className='drum-display-school selected'; disp.textContent='その他'; document.getElementById('sib-school').value=''; document.getElementById('sib-schoolOtherWrap').style.display='block'; }
+  else { disp.className='drum-display-school selected'; disp.textContent=val; document.getElementById('sib-school').value=val; document.getElementById('sib-schoolOtherWrap').style.display='none'; clearErr('sib-school'); }
+}
+function onSibSchoolOtherInput() { const v=document.getElementById('sib-schoolOther').value.trim(); document.getElementById('sib-school').value=v; if(v) clearErr('sib-school'); }
+
+// ===== アンケート連動 =====
 document.querySelectorAll('input[id^="tr-"]').forEach(cb => {
-  cb.addEventListener('change', function() {
-    const show = document.getElementById('tr-5').checked;
-    document.getElementById('referrer-field').style.display = show ? 'block' : 'none';
+  cb.addEventListener('change', () => {
+    document.getElementById('referrer-field').style.display = document.getElementById('tr-5').checked ? 'block' : 'none';
   });
 });
-
-// ===== 希望コース：個別指導の場合に理由欄を表示 =====
 document.querySelectorAll('input[name="course"]').forEach(r => {
   r.addEventListener('change', function() {
     document.getElementById('reason-field').style.display = this.value === '個別指導' ? 'block' : 'none';
@@ -528,18 +634,17 @@ async function lookupZip() {
       document.getElementById('zipStatus').className = 'zip-status ng';
     }
   } catch(e) {
-    document.getElementById('zipStatus').textContent = '通信エラーが発生しました';
+    document.getElementById('zipStatus').textContent = '通信エラー';
     document.getElementById('zipStatus').className = 'zip-status ng';
   }
   document.getElementById('zipBtn').disabled = false;
 }
 
-// ===== 電話番号フォーマット =====
 function formatPhone(el) {
   let v = el.value.replace(/[^0-9]/g, '');
-  if (v.length <= 3) { el.value = v; }
-  else if (v.length <= 7) { el.value = v.slice(0,3) + '-' + v.slice(3); }
-  else { el.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11); }
+  if (v.length <= 3) el.value = v;
+  else if (v.length <= 7) el.value = v.slice(0,3) + '-' + v.slice(3);
+  else el.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11);
 }
 
 // ===== ステップ管理 =====
@@ -575,15 +680,26 @@ function validateStep(step) {
     const k = document.getElementById('kana').value.trim(); setErr('kana', !k); if (!k) ok = false;
     const g = document.querySelector('input[name="gender"]:checked');
     document.getElementById('err-gender').classList.toggle('show', !g); if (!g) ok = false;
-    const bd = getBirthdate(); setErr('birthdate', !bd); if (!bd) ok = false;
+    const bd = getBirthdate(''); setErr('birthdate', !bd); if (!bd) ok = false;
     const gr = document.getElementById('grade').value; setErr('grade', !gr); if (!gr) ok = false;
     const sc = document.getElementById('school').value; setErr('school', !sc); if (!sc) ok = false;
+
+    // 兄弟バリデーション
+    if (hasSibling) {
+      const sn = document.getElementById('sib-name').value.trim(); setErr('sib-name', !sn); if (!sn) ok = false;
+      const sk = document.getElementById('sib-kana').value.trim(); setErr('sib-kana', !sk); if (!sk) ok = false;
+      const sg = document.querySelector('input[name="sib-gender"]:checked');
+      document.getElementById('err-sib-gender').classList.toggle('show', !sg); if (!sg) ok = false;
+      const sbd = getBirthdate('sib'); setErr('sib-birthdate', !sbd); if (!sbd) ok = false;
+      const sgr = document.getElementById('sib-grade').value; setErr('sib-grade', !sgr); if (!sgr) ok = false;
+      const ssc = document.getElementById('sib-school').value; setErr('sib-school', !ssc); if (!ssc) ok = false;
+    }
   }
   if (step === 2) {
     const z = document.getElementById('zip').value.replace(/[^0-9]/g,''); setErr('zip', z.length < 7); if (z.length < 7) ok = false;
     const a = document.getElementById('address').value.trim(); setErr('address', !a); if (!a) ok = false;
     const p = document.getElementById('phone').value.replace(/[^0-9]/g,''); setErr('phone', p.length < 10); if (p.length < 10) ok = false;
-    const c = document.querySelector('input[name="course"]:checked'); 
+    const c = document.querySelector('input[name="course"]:checked');
     document.getElementById('err-course').classList.toggle('show', !c); if (!c) ok = false;
   }
   if (step === 3) {
@@ -605,40 +721,61 @@ function buildConfirm() {
   const g = document.querySelector('input[name="gender"]:checked');
   const c = document.querySelector('input[name="course"]:checked');
   const w = document.querySelector('input[name="who"]:checked');
-  const groups = [
-    {title:'👦 生徒情報', items:[
-      ['氏名', document.getElementById('name').value],
-      ['ふりがな', document.getElementById('kana').value],
-      ['性別', g ? g.value : ''],
-      ['生年月日', getBirthdateDisplay()],
-      ['学年', document.getElementById('grade').value],
-      ['在学学校', document.getElementById('school').value],
-      ['部活・習い事', document.getElementById('club').value || '—'],
-    ]},
-    {title:'📍 連絡先', items:[
-      ['郵便番号', document.getElementById('zip').value],
-      ['住所', document.getElementById('address').value],
-      ['電話番号', document.getElementById('phone').value],
-      ['希望コース', c ? c.value : ''],
-    ]},
-    {title:'📝 アンケート', items:[
-      ['きっかけ', getChecked('tr-') || '—'],
-      ['ご紹介者', document.getElementById('referrer').value || '—'],
-      ['最初に検討したのは', w ? w.value : ''],
-      ['選んだ理由', getChecked('rs-') || '—'],
-    ]},
-  ];
-  document.getElementById('confirmContent').innerHTML = groups.map(g =>
-    `<div class="review-group"><div class="review-group-title">${g.title}</div><table class="confirm-table">${
-      g.items.map(([l,v]) => `<tr><td>${l}</td><td>${v || '—'}</td></tr>`).join('')
-    }</table></div>`
-  ).join('');
+  const sg = document.querySelector('input[name="sib-gender"]:checked');
+
+  let html = '';
+
+  // メイン生徒
+  html += buildReviewGroup('👦 生徒情報', [
+    ['氏名', document.getElementById('name').value],
+    ['ふりがな', document.getElementById('kana').value],
+    ['性別', g ? g.value : ''],
+    ['生年月日', getBirthdateDisplay('')],
+    ['学年', document.getElementById('grade').value],
+    ['在学学校', document.getElementById('school').value],
+    ['部活・習い事', document.getElementById('club').value || '—'],
+  ]);
+
+  // 兄弟
+  if (hasSibling) {
+    html += buildReviewGroup('👫 ご兄弟・姉妹', [
+      ['氏名', document.getElementById('sib-name').value],
+      ['ふりがな', document.getElementById('sib-kana').value],
+      ['性別', sg ? sg.value : ''],
+      ['生年月日', getBirthdateDisplay('sib')],
+      ['学年', document.getElementById('sib-grade').value],
+      ['在学学校', document.getElementById('sib-school').value],
+      ['部活・習い事', document.getElementById('sib-club').value || '—'],
+    ]);
+  }
+
+  html += buildReviewGroup('📍 連絡先', [
+    ['郵便番号', document.getElementById('zip').value],
+    ['住所', document.getElementById('address').value],
+    ['電話番号', document.getElementById('phone').value],
+    ['希望コース', c ? c.value : ''],
+  ]);
+
+  html += buildReviewGroup('📝 アンケート', [
+    ['きっかけ', getChecked('tr-') || '—'],
+    ['ご紹介者', document.getElementById('referrer').value || '—'],
+    ['最初に検討したのは', w ? w.value : ''],
+    ['選んだ理由', getChecked('rs-') || '—'],
+  ]);
+
+  document.getElementById('confirmContent').innerHTML = html;
 }
 
-// ===== 送信 =====
-// ★デプロイ後にGoogle Apps ScriptのURLを入れてください
+function buildReviewGroup(title, items) {
+  return `<div class="review-group"><div class="review-group-title">${title}</div><table class="confirm-table">${
+    items.map(([l,v]) => `<tr><td>${l}</td><td>${v || '—'}</td></tr>`).join('')
+  }</table></div>`;
+}
+
+// ===== GAS URL =====
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyNyWe4QXyDqOltB01VjtiqdeGZ0MRkiy5xnrN2QaVusfot7hPSeMmFaEaCkamqTp3Y/exec';
 
+// ===== 送信 =====
 async function submitForm() {
   const btn = document.getElementById('submitBtn');
   const loading = document.getElementById('loadingIndicator');
@@ -648,33 +785,74 @@ async function submitForm() {
   const g = document.querySelector('input[name="gender"]:checked');
   const c = document.querySelector('input[name="course"]:checked');
   const w = document.querySelector('input[name="who"]:checked');
+  const sg = document.querySelector('input[name="sib-gender"]:checked');
 
-  const data = {
-    登録日時: new Date().toLocaleString('ja-JP'),
+  const trigger = getChecked('tr-');
+  const referrer = document.getElementById('referrer').value.trim();
+  let finalTrigger = trigger;
+  if (referrer && !trigger.includes('知人や友人から聞いて')) {
+    finalTrigger = trigger ? trigger + '、知人や友人から聞いて' : '知人や友人から聞いて';
+  }
+
+  const now = new Date().toLocaleString('ja-JP');
+
+  // メイン生徒データ
+  const mainData = {
+    登録日時: now,
     学年: document.getElementById('grade').value,
     学校名: document.getElementById('school').value,
     氏名: document.getElementById('name').value.trim(),
     ふりがな: document.getElementById('kana').value.trim(),
-    生年月日: getBirthdate(),
+    生年月日: getBirthdate(''),
     性別: g ? g.value : '',
-    部活習い事: document.getElementById('club').value.trim(),
+    '部活・習い事': document.getElementById('club').value.trim(),
     郵便番号: document.getElementById('zip').value,
     住所: document.getElementById('address').value.trim(),
     電話番号: document.getElementById('phone').value,
     希望コース: c ? c.value : '',
-    きっかけ: getChecked('tr-'),
+    きっかけ: finalTrigger,
     最初に検討したのは: w ? w.value : '',
     選んだ理由: getChecked('rs-'),
-    紹介者: document.getElementById('referrer').value.trim(),
+    メモ: '',
+    紹介者: referrer,
   };
 
+  const dataToSend = [mainData];
+
+  // 兄弟データ
+  if (hasSibling) {
+    const sibData = {
+      登録日時: now,
+      学年: document.getElementById('sib-grade').value,
+      学校名: document.getElementById('sib-school').value,
+      氏名: document.getElementById('sib-name').value.trim(),
+      ふりがな: document.getElementById('sib-kana').value.trim(),
+      生年月日: getBirthdate('sib'),
+      性別: sg ? sg.value : '',
+      '部活・習い事': document.getElementById('sib-club').value.trim(),
+      郵便番号: document.getElementById('zip').value,
+      住所: document.getElementById('address').value.trim(),
+      電話番号: document.getElementById('phone').value,
+      希望コース: c ? c.value : '',
+      きっかけ: finalTrigger,
+      最初に検討したのは: w ? w.value : '',
+      選んだ理由: getChecked('rs-'),
+      メモ: '',
+      紹介者: referrer,
+    };
+    dataToSend.push(sibData);
+  }
+
   try {
-    await fetch(GAS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
+    // メイン・兄弟を順番に送信
+    for (const data of dataToSend) {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+    }
     loading.style.display = 'none';
     document.querySelector('.header').style.display = 'none';
     document.querySelector('.progress-wrap').style.display = 'none';
