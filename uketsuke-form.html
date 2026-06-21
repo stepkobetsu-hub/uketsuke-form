@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>個別指導Step｜受付カード</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #2BA8D8; --sky-dark: #1A86B3; --sky-light: #E6F6FD;
+    --accent: #FF7A2F; --green: #27AE60; --red: #E74C3C;
+    --navy: #1A3A52; --text: #2C3E50; --muted: #6B8FA8;
+    --border: #C5E0EE; --bg: #EBF7FC; --card: #FFFFFF;
+    --radius: 14px; --shadow: 0 2px 18px rgba(43,168,216,0.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  ::placeholder { color: #B0C8D8 !important; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .header { background: linear-gradient(135deg, var(--sky), var(--sky-dark)); padding: 24px 20px 20px; text-align: center; }
+  .header-badge { display: inline-block; background: rgba(255,255,255,0.25); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
+  .header h1 { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .header p { color: rgba(255,255,255,0.85); font-size: 12px; }
+
+  /* Progress */
+  .progress-wrap { background: linear-gradient(135deg, var(--sky-dark), #1260A0); padding: 0 20px 16px; }
+  .progress-steps { display: flex; align-items: center; max-width: 500px; margin: 0 auto; }
+  .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .step-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.45); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+  .step-item.active .step-circle { border-color: #fff; color: #fff; background: rgba(255,255,255,0.2); box-shadow: 0 0 0 4px rgba(255,255,255,0.15); }
+  .step-item.done .step-circle { border-color: #7FDDFF; background: #7FDDFF; color: var(--navy); }
+  .step-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 4px; white-space: nowrap; }
+  .step-item.active .step-label { color: #fff; }
+  .step-item.done .step-label { color: rgba(255,255,255,0.8); }
+  .step-line { flex: 1; height: 2px; background: rgba(255,255,255,0.2); margin: 0 4px 16px; transition: background 0.3s; }
+  .step-line.done { background: #7FDDFF; }
+
+  .container { max-width: 600px; margin: 0 auto; padding: 20px 16px 48px; }
+
+  .section-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px 20px; margin-bottom: 20px; display: none; animation: fadeIn 0.35s ease; }
+  .section-card.active { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .section-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--sky-light); display: flex; align-items: center; gap: 8px; }
+  .section-title .icon { background: var(--sky-light); color: var(--sky); width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .field label .req { color: var(--accent); margin-left: 4px; font-size: 11px; }
+  .field label .opt { color: var(--muted); margin-left: 4px; font-size: 11px; font-weight: 400; }
+  .field label .hint { font-weight: 400; color: var(--muted); font-size: 11px; margin-left: 6px; }
+
+  .field input[type="text"], .field input[type="tel"], .field select, .field textarea {
+    width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'Noto Sans JP', sans-serif; font-size: 15px; color: var(--text);
+    background: #F8FCFF; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--sky); box-shadow: 0 0 0 3px rgba(43,168,216,0.18); background: #fff; }
+  .field input.error, .field select.error, .field textarea.error { border-color: var(--red); }
+  .field .err-msg { font-size: 12px; color: var(--red); margin-top: 4px; display: none; }
+  .field .err-msg.show { display: block; }
+  .field textarea { resize: none; height: 80px; }
+
+  /* Radio */
+  .radio-group { display: flex; gap: 12px; }
+  .radio-btn { flex: 1; }
+  .radio-btn input { display: none; }
+  .radio-btn label { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--muted); background: #F8FCFF; transition: all 0.2s; margin-bottom: 0; }
+  .radio-btn input:checked + label { border-color: var(--sky); background: var(--sky-light); color: var(--sky-dark); box-shadow: 0 0 0 3px rgba(43,168,216,0.15); }
+
+  /* Checkbox */
+  .check-group { display: flex; flex-direction: column; gap: 8px; }
+  .check-btn input { display: none; }
+  .check-btn label { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--text); background: #F8FCFF; transition: all 0.2s; }
+  .check-btn label::before { content: ''; width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 5px; flex-shrink: 0; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .check-btn input:checked + label { border-color: var(--sky); background: var(--sky-light); color: var(--sky-dark); }
+  .check-btn input:checked + label::before { background: var(--sky); border-color: var(--sky); content: '✓'; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+  /* Date picker */
+  .date-picker { display: flex; gap: 8px; }
+  .date-picker-part { flex: 1; }
+  .date-picker-part > .part-label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; text-align: center; }
+  .drum-picker { position: relative; height: 46px; overflow: hidden; border: 1.5px solid var(--border); border-radius: 8px; background: #F8FCFF; cursor: pointer; }
+  .drum-picker:focus-within { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(43,168,216,0.18); }
+  .drum-picker select { position: absolute; top:0;left:0;width:100%;height:100%; opacity:0; cursor:pointer; font-size:16px; }
+  .drum-display { display: flex; align-items: center; justify-content: center; height: 100%; font-size: 15px; font-weight: 500; color: var(--text); pointer-events: none; }
+  .drum-display.placeholder { color: var(--muted); font-size: 13px; }
+  .wareki-label { font-size: 11px; color: var(--muted); margin-top: 4px; text-align: center; min-height: 16px; }
+
+  /* Select wrap */
+  .select-wrap { position: relative; }
+  .select-wrap::after { content:'▾'; position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+  .select-wrap select { padding-right: 36px; cursor: pointer; }
+
+  /* School */
+  .drum-picker-school { position: relative; height: 46px; overflow: hidden; border: 1.5px solid var(--border); border-radius: 8px; background: #F8FCFF; cursor: pointer; }
+  .drum-picker-school select { position: absolute; top:0;left:0;width:100%;height:100%; opacity:0; cursor:pointer; font-size:16px; }
+  .drum-display-school { display: flex; align-items: center; justify-content: center; height: 100%; font-size: 15px; font-weight: 500; color: var(--muted); pointer-events: none; padding: 0 14px; }
+  .drum-display-school.selected { color: var(--text); }
+
+  /* ZIP */
+  .zip-row { display: flex; gap: 10px; }
+  .zip-row input { flex: 1; }
+  .zip-btn { padding: 12px 16px; background: var(--sky); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; font-family: 'Noto Sans JP', sans-serif; }
+  .zip-btn:disabled { background: var(--muted); cursor: not-allowed; }
+  .zip-status { font-size: 12px; margin-top: 4px; }
+  .zip-status.ok { color: var(--green); }
+  .zip-status.ng { color: var(--red); }
+
+  /* Nav */
+  .nav-btns { display: flex; gap: 12px; margin-top: 24px; }
+  .btn-back { flex: 1; padding: 14px; background: #fff; border: 2px solid var(--border); border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: var(--muted); cursor: pointer; }
+  .btn-next { flex: 2; padding: 14px; background: linear-gradient(135deg, var(--sky), var(--sky-dark)); border: none; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(43,168,216,0.4); }
+  .btn-submit { flex: 2; padding: 14px; background: linear-gradient(135deg, #27AE60, #1E8449); border: none; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(39,174,96,0.4); }
+  .btn-submit:disabled { background: var(--muted); box-shadow: none; cursor: not-allowed; }
+
+  /* Confirm */
+  .review-group { margin-bottom: 20px; }
+  .review-group-title { font-size: 11px; font-weight: 700; color: var(--sky); letter-spacing: 0.08em; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .confirm-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .confirm-table tr { border-bottom: 1px solid #EBF7FC; }
+  .confirm-table td { padding: 9px 4px; vertical-align: top; }
+  .confirm-table td:first-child { color: var(--muted); font-size: 12px; width: 110px; padding-right: 8px; white-space: nowrap; }
+  .confirm-table td:last-child { font-weight: 500; word-break: break-all; }
+
+  .note { background: var(--sky-light); border-left: 3px solid var(--sky); border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 12px; color: var(--sky-dark); margin-bottom: 18px; line-height: 1.7; }
+
+  .loading { display: none; text-align: center; padding: 24px; }
+  .spinner { width: 34px; height: 34px; border: 3px solid #B3E3F5; border-top-color: var(--sky); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+
+  .success-page { text-align: center; padding: 48px 20px; display: none; }
+  .success-page.show { display: block; }
+  .success-icon { font-size: 72px; margin-bottom: 16px; animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1); display: block; }
+  @keyframes pop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+  .success-page h2 { font-size: 22px; color: var(--sky-dark); margin-bottom: 12px; }
+  .success-page p { color: var(--muted); font-size: 14px; line-height: 1.9; }
+  .btn-again { margin-top: 24px; padding: 14px 32px; background: linear-gradient(135deg, var(--sky), var(--sky-dark)); border: none; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; }
+
+  @media(max-width:400px){ .header h1{font-size:17px} .section-card{padding:16px 12px} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">📋 受付カード</div>
+  <h1>個別指導Step 受付カード</h1>
+  <p>タブレット・スマホで入力できます</p>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="step-item active" id="si-1"><div class="step-circle">1</div><div class="step-label">生徒情報</div></div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-item" id="si-2"><div class="step-circle">2</div><div class="step-label">連絡先</div></div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step-item" id="si-3"><div class="step-circle">3</div><div class="step-label">アンケート</div></div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step-item" id="si-4"><div class="step-circle">4</div><div class="step-label">確認</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STEP 1: 生徒情報 -->
+  <div class="section-card active" id="step-1">
+    <div class="section-title"><span class="icon">👦</span>生徒情報</div>
+
+    <div class="field">
+      <label>氏名<span class="req">必須</span></label>
+      <input type="text" id="name" placeholder="例：館 奏太">
+      <div class="err-msg" id="err-name">氏名を入力してください</div>
+    </div>
+
+    <div class="field">
+      <label>ふりがな<span class="req">必須</span></label>
+      <input type="text" id="kana" placeholder="例：たち かなた">
+      <div class="err-msg" id="err-kana">ふりがなを入力してください</div>
+    </div>
+
+    <div class="field">
+      <label>性別<span class="req">必須</span></label>
+      <div class="radio-group">
+        <div class="radio-btn"><input type="radio" name="gender" id="g-m" value="男"><label for="g-m">男</label></div>
+        <div class="radio-btn"><input type="radio" name="gender" id="g-f" value="女"><label for="g-f">女</label></div>
+      </div>
+      <div class="err-msg" id="err-gender">性別を選択してください</div>
+    </div>
+
+    <div class="field">
+      <label>生年月日<span class="req">必須</span></label>
+      <div class="date-picker">
+        <div class="date-picker-part" style="flex:1.4">
+          <span class="part-label">年</span>
+          <div class="drum-picker"><select id="sel-year" onchange="updateDrum('year')"><option value="">選択</option></select><div class="drum-display placeholder" id="disp-year">年を選ぶ</div></div>
+          <div class="wareki-label" id="wareki-label"></div>
+        </div>
+        <div class="date-picker-part" style="flex:0.7">
+          <span class="part-label">月</span>
+          <div class="drum-picker"><select id="sel-month" onchange="updateDrum('month')"><option value="">月</option></select><div class="drum-display placeholder" id="disp-month">月</div></div>
+        </div>
+        <div class="date-picker-part" style="flex:0.7">
+          <span class="part-label">日</span>
+          <div class="drum-picker"><select id="sel-day" onchange="updateDrum('day')"><option value="">日</option></select><div class="drum-display placeholder" id="disp-day">日</div></div>
+        </div>
+      </div>
+      <div class="err-msg" id="err-birthdate">生年月日を選択してください</div>
+    </div>
+
+    <div class="field">
+      <label>学年<span class="req">必須</span></label>
+      <div class="select-wrap">
+        <select id="grade">
+          <option value="">選択してください</option>
+          <optgroup label="小学校"><option>小１</option><option>小２</option><option>小３</option><option>小４</option><option>小５</option><option>小６</option></optgroup>
+          <optgroup label="中学校"><option>中１</option><option>中２</option><option>中３</option></optgroup>
+          <optgroup label="高校"><option>高１</option><option>高２</option><option>高３</option></optgroup>
+        </select>
+      </div>
+      <div class="err-msg" id="err-grade">学年を選択してください</div>
+    </div>
+
+    <div class="field">
+      <label>在学学校<span class="req">必須</span></label>
+      <div class="drum-picker-school">
+        <select id="schoolSelect" onchange="onSchoolSelect()">
+          <option value="">選択してください</option>
+          <optgroup label="小学校">
+            <option>神領小</option><option>北城小</option><option>下志段味小</option><option>上志段味小</option>
+            <option>志段味東小</option><option>出川小</option><option>大城小</option><option>不二小</option>
+            <option>篠木小</option><option>鷹来小</option><option>岩成台小</option><option>本庄小</option>
+            <option>西山小</option><option>松原小</option><option>丸田小</option><option>大手小</option>
+            <option>牛山小</option><option>春日井小</option>
+          </optgroup>
+          <optgroup label="中学校">
+            <option>南城中</option><option>高蔵寺中</option><option>志段味中</option><option>吉根中</option>
+            <option>坂下中</option><option>石尾台中</option><option>東部中</option><option>鷹来中</option><option>西部中</option>
+          </optgroup>
+          <optgroup label="高校">
+            <option>春日井高校</option><option>高蔵寺高校</option><option>春日井南高校</option>
+            <option>春日井西高校</option><option>春日井東高校</option><option>春日丘高校</option>
+          </optgroup>
+          <option value="その他">その他（自由入力）</option>
+        </select>
+        <div class="drum-display-school" id="disp-school">タップして選択</div>
+      </div>
+      <input type="hidden" id="school" value="">
+      <div id="schoolOtherWrap" style="display:none;margin-top:8px;">
+        <input type="text" id="schoolOther" placeholder="学校名を入力" oninput="onSchoolOtherInput()">
+      </div>
+      <div class="err-msg" id="err-school">在学学校を選択してください</div>
+    </div>
+
+    <div class="field">
+      <label>部活・習い事<span class="opt">任意</span></label>
+      <input type="text" id="club" placeholder="例：サッカー、書道">
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-next" onclick="nextStep(1)">次へ：連絡先 →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: 連絡先 -->
+  <div class="section-card" id="step-2">
+    <div class="section-title"><span class="icon">📍</span>連絡先・住所</div>
+
+    <div class="field">
+      <label>郵便番号<span class="req">必須</span><span class="hint">7桁で自動検索</span></label>
+      <div class="zip-row">
+        <input type="tel" id="zip" placeholder="例：4860803" maxlength="8" inputmode="numeric" oninput="onZipInput()">
+        <button class="zip-btn" id="zipBtn" onclick="lookupZip()">住所を検索</button>
+      </div>
+      <div class="zip-status" id="zipStatus"></div>
+      <div class="err-msg" id="err-zip">7桁の郵便番号を入力してください</div>
+    </div>
+
+    <div class="field">
+      <label>住所<span class="req">必須</span></label>
+      <input type="text" id="address" placeholder="例：春日井市神領町3-3-9">
+      <div class="err-msg" id="err-address">住所を入力してください</div>
+    </div>
+
+    <div class="field">
+      <label>電話番号<span class="req">必須</span></label>
+      <input type="tel" id="phone" placeholder="例：090-1234-5678" inputmode="numeric" maxlength="13" oninput="formatPhone(this)">
+      <div class="err-msg" id="err-phone">電話番号を入力してください</div>
+    </div>
+
+    <div class="field">
+      <label>希望コース<span class="req">必須</span></label>
+      <div class="radio-group">
+        <div class="radio-btn"><input type="radio" name="course" id="c-1" value="個別指導"><label for="c-1">個別指導</label></div>
+        <div class="radio-btn"><input type="radio" name="course" id="c-2" value="プログラミング"><label for="c-2">プログラミング</label></div>
+      </div>
+      <div class="err-msg" id="err-course">希望コースを選択してください</div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-back" onclick="prevStep(2)">← 戻る</button>
+      <button class="btn-next" onclick="nextStep(2)">次へ：アンケート →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: アンケート -->
+  <div class="section-card" id="step-3">
+    <div class="section-title"><span class="icon">📝</span>アンケート</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">ご入塾とは関係ございません。ご協力をお願いします。</p>
+
+    <div class="field">
+      <label>個別指導ステップをどこでお知りになりましたか？<span class="opt">複数選択可</span></label>
+      <div class="check-group">
+        <div class="check-btn"><input type="checkbox" id="tr-1" value="ホームページを見て"><label for="tr-1">ホームページを見て</label></div>
+        <div class="check-btn"><input type="checkbox" id="tr-2" value="ポスティングの折り込みを見て"><label for="tr-2">ポスティングの折り込みを見て</label></div>
+        <div class="check-btn"><input type="checkbox" id="tr-3" value="子どもが持ち帰ったチラシを見て"><label for="tr-3">子どもが持ち帰ったチラシを見て</label></div>
+        <div class="check-btn"><input type="checkbox" id="tr-4" value="比較サイトを見て"><label for="tr-4">比較サイトを見て</label></div>
+        <div class="check-btn"><input type="checkbox" id="tr-5" value="知人や友人から聞いて"><label for="tr-5">知人や友人から聞いて</label></div>
+        <div class="check-btn"><input type="checkbox" id="tr-6" value="新聞の折り込みチラシを見て"><label for="tr-6">新聞の折り込みチラシを見て</label></div>
+        <div class="check-btn"><input type="checkbox" id="tr-7" value="LINE広告を見て"><label for="tr-7">LINE広告を見て</label></div>
+        <div class="check-btn"><input type="checkbox" id="tr-8" value="ダイレクトメール（郵便ハガキ等）を見て"><label for="tr-8">ダイレクトメール（郵便ハガキ等）を見て</label></div>
+        <div class="check-btn"><input type="checkbox" id="tr-9" value="看板を見て"><label for="tr-9">看板を見て</label></div>
+      </div>
+    </div>
+
+    <div class="field" id="referrer-field" style="display:none;">
+      <label>ご紹介者のお名前<span class="opt">任意</span></label>
+      <input type="text" id="referrer" placeholder="例：中2 山田太郎">
+    </div>
+
+    <div class="field">
+      <label>最初に入塾を検討されたのはどなたですか？<span class="req">必須</span></label>
+      <div class="radio-group">
+        <div class="radio-btn"><input type="radio" name="who" id="w-1" value="生徒さんご本人"><label for="w-1">生徒さんご本人</label></div>
+        <div class="radio-btn"><input type="radio" name="who" id="w-2" value="保護者の方"><label for="w-2">保護者の方</label></div>
+      </div>
+      <div class="err-msg" id="err-who">選択してください</div>
+    </div>
+
+    <div class="field" id="reason-field" style="display:none;">
+      <label>個別指導をお選びいただいた主な理由<span class="opt">複数選択可</span></label>
+      <div class="check-group">
+        <div class="check-btn"><input type="checkbox" id="rs-1" value="個別学習だから"><label for="rs-1">個別学習だから</label></div>
+        <div class="check-btn"><input type="checkbox" id="rs-2" value="やる気が出そうだから"><label for="rs-2">やる気が出そうだから</label></div>
+        <div class="check-btn"><input type="checkbox" id="rs-3" value="めんどうをよく見てくれそうだから"><label for="rs-3">めんどうをよく見てくれそうだから</label></div>
+        <div class="check-btn"><input type="checkbox" id="rs-4" value="料金が高くないから"><label for="rs-4">料金が高くないから</label></div>
+        <div class="check-btn"><input type="checkbox" id="rs-5" value="知人が通っている（評判を聞いた）から"><label for="rs-5">知人が通っている（評判を聞いた）から</label></div>
+        <div class="check-btn"><input type="checkbox" id="rs-6" value="場所が近い（交通の便がいい）から"><label for="rs-6">場所が近い（交通の便がいい）から</label></div>
+        <div class="check-btn"><input type="checkbox" id="rs-7" value="5科目対応だから"><label for="rs-7">5科目対応だから</label></div>
+        <div class="check-btn"><input type="checkbox" id="rs-8" value="テスト対策が充実していそうだから"><label for="rs-8">テスト対策が充実していそうだから</label></div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-back" onclick="prevStep(3)">← 戻る</button>
+      <button class="btn-next" onclick="nextStep(3)">確認画面へ →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: 確認 -->
+  <div class="section-card" id="step-4">
+    <div class="section-title"><span class="icon">📋</span>入力内容の確認</div>
+    <div class="note">内容をご確認の上、「登録する」ボタンを押してください。</div>
+    <div id="confirmContent"></div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="prevStep(4)">← 修正する</button>
+      <button class="btn-submit" id="submitBtn" onclick="submitForm()">✓ 登録する</button>
+    </div>
+    <div class="loading" id="loadingIndicator">
+      <div class="spinner"></div>
+      <div style="font-size:14px;color:var(--muted)">送信中です…</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="success-page" id="successPage">
+  <span class="success-icon">✅</span>
+  <h2>受付カードの登録が完了しました。</h2>
+  <p>ご協力ありがとうございました。<br>個別指導ステップ スタッフが確認いたします。</p>
+  <button class="btn-again" onclick="location.reload()">続けて別の方を登録する</button>
+</div>
+
+<script>
+// ===== 和暦変換 =====
+function toWareki(year) {
+  if (year >= 2019) return '令和' + (year - 2018) + '年';
+  if (year >= 1989) return '平成' + (year - 1988) + '年';
+  if (year >= 1926) return '昭和' + (year - 1925) + '年';
+  return '';
+}
+
+// ===== 年選択初期化 =====
+(function() {
+  const ySel = document.getElementById('sel-year');
+  const mSel = document.getElementById('sel-month');
+  const cur = new Date().getFullYear();
+  for (let y = cur - 3; y >= cur - 22; y--) {
+    const o = document.createElement('option');
+    o.value = y;
+    o.textContent = y + '年（' + toWareki(y) + '）';
+    ySel.appendChild(o);
+  }
+  for (let m = 1; m <= 12; m++) {
+    const o = document.createElement('option');
+    o.value = m; o.textContent = m + '月'; mSel.appendChild(o);
+  }
+  updateDays();
+})();
+
+function updateDrum(type) {
+  const sel = document.getElementById('sel-' + type);
+  const disp = document.getElementById('disp-' + type);
+  const val = sel.value;
+  if (!val) {
+    disp.className = 'drum-display placeholder';
+    disp.textContent = {year:'年を選ぶ', month:'月', day:'日'}[type];
+  } else {
+    disp.className = 'drum-display';
+    if (type === 'year') {
+      disp.textContent = val + '年';
+      document.getElementById('wareki-label').textContent = '（' + toWareki(parseInt(val)) + '）';
+    } else {
+      disp.textContent = val + {month:'月', day:'日'}[type];
+    }
+  }
+  if (type === 'year' || type === 'month') updateDays();
+}
+
+function updateDays() {
+  const y = parseInt(document.getElementById('sel-year').value) || 2010;
+  const m = parseInt(document.getElementById('sel-month').value) || 1;
+  const days = new Date(y, m, 0).getDate();
+  const dSel = document.getElementById('sel-day');
+  const cur = dSel.value;
+  dSel.innerHTML = '<option value="">日</option>';
+  for (let d = 1; d <= days; d++) {
+    const o = document.createElement('option');
+    o.value = d; o.textContent = d + '日';
+    if (d == cur) o.selected = true;
+    dSel.appendChild(o);
+  }
+  updateDrum('day');
+}
+
+function getBirthdate() {
+  const y = document.getElementById('sel-year').value;
+  const m = document.getElementById('sel-month').value;
+  const d = document.getElementById('sel-day').value;
+  if (!y || !m || !d) return '';
+  return y + '年' + m + '月' + d + '日';
+}
+
+function getBirthdateDisplay() {
+  const y = document.getElementById('sel-year').value;
+  const m = document.getElementById('sel-month').value;
+  const d = document.getElementById('sel-day').value;
+  if (!y || !m || !d) return '';
+  return y + '年（' + toWareki(parseInt(y)) + '）' + m + '月' + d + '日';
+}
+
+// ===== 学校選択 =====
+function onSchoolSelect() {
+  const sel = document.getElementById('schoolSelect');
+  const val = sel.value;
+  const disp = document.getElementById('disp-school');
+  if (!val) {
+    disp.className = 'drum-display-school';
+    disp.textContent = 'タップして選択';
+    document.getElementById('school').value = '';
+    document.getElementById('schoolOtherWrap').style.display = 'none';
+  } else if (val === 'その他') {
+    disp.className = 'drum-display-school selected';
+    disp.textContent = 'その他';
+    document.getElementById('school').value = '';
+    document.getElementById('schoolOtherWrap').style.display = 'block';
+  } else {
+    disp.className = 'drum-display-school selected';
+    disp.textContent = val;
+    document.getElementById('school').value = val;
+    document.getElementById('schoolOtherWrap').style.display = 'none';
+    clearErr('school');
+  }
+}
+function onSchoolOtherInput() {
+  const v = document.getElementById('schoolOther').value.trim();
+  document.getElementById('school').value = v;
+  if (v) clearErr('school');
+}
+
+// ===== きっかけ：紹介者欄の表示切替 =====
+document.querySelectorAll('input[id^="tr-"]').forEach(cb => {
+  cb.addEventListener('change', function() {
+    const show = document.getElementById('tr-5').checked;
+    document.getElementById('referrer-field').style.display = show ? 'block' : 'none';
+  });
+});
+
+// ===== 希望コース：個別指導の場合に理由欄を表示 =====
+document.querySelectorAll('input[name="course"]').forEach(r => {
+  r.addEventListener('change', function() {
+    document.getElementById('reason-field').style.display = this.value === '個別指導' ? 'block' : 'none';
+  });
+});
+
+// ===== ZIP =====
+function onZipInput() {
+  const v = document.getElementById('zip').value.replace(/[^0-9]/g, '');
+  document.getElementById('zip').value = v;
+  if (v.length === 7) lookupZip();
+}
+async function lookupZip() {
+  const raw = document.getElementById('zip').value.replace(/[^0-9]/g, '');
+  if (raw.length < 7) return;
+  document.getElementById('zipBtn').disabled = true;
+  document.getElementById('zipStatus').textContent = '検索中…';
+  document.getElementById('zipStatus').className = 'zip-status';
+  try {
+    const res = await fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + raw);
+    const json = await res.json();
+    if (json.results && json.results.length > 0) {
+      const r = json.results[0];
+      document.getElementById('address').value = r.address1 + r.address2 + r.address3;
+      document.getElementById('zipStatus').textContent = '✓ 住所を自動入力しました';
+      document.getElementById('zipStatus').className = 'zip-status ok';
+      clearErr('address');
+    } else {
+      document.getElementById('zipStatus').textContent = '該当する住所が見つかりません';
+      document.getElementById('zipStatus').className = 'zip-status ng';
+    }
+  } catch(e) {
+    document.getElementById('zipStatus').textContent = '通信エラーが発生しました';
+    document.getElementById('zipStatus').className = 'zip-status ng';
+  }
+  document.getElementById('zipBtn').disabled = false;
+}
+
+// ===== 電話番号フォーマット =====
+function formatPhone(el) {
+  let v = el.value.replace(/[^0-9]/g, '');
+  if (v.length <= 3) { el.value = v; }
+  else if (v.length <= 7) { el.value = v.slice(0,3) + '-' + v.slice(3); }
+  else { el.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11); }
+}
+
+// ===== ステップ管理 =====
+let currentStep = 1;
+function showStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('step-' + i).classList.toggle('active', i === n);
+    const ind = document.getElementById('si-' + i);
+    ind.classList.remove('active', 'done');
+    if (i === n) ind.classList.add('active');
+    else if (i < n) ind.classList.add('done');
+    if (i < 4) document.getElementById('line-' + i).classList.toggle('done', i < n);
+  }
+  currentStep = n;
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+function nextStep(from) { if (!validateStep(from)) return; showStep(from + 1); if (from + 1 === 4) buildConfirm(); }
+function prevStep(from) { showStep(from - 1); }
+
+// ===== バリデーション =====
+function setErr(id, show) {
+  const el = document.getElementById(id);
+  const err = document.getElementById('err-' + id);
+  if (el) el.classList.toggle('error', show);
+  if (err) err.classList.toggle('show', show);
+}
+function clearErr(id) { setErr(id, false); }
+
+function validateStep(step) {
+  let ok = true;
+  if (step === 1) {
+    const n = document.getElementById('name').value.trim(); setErr('name', !n); if (!n) ok = false;
+    const k = document.getElementById('kana').value.trim(); setErr('kana', !k); if (!k) ok = false;
+    const g = document.querySelector('input[name="gender"]:checked');
+    document.getElementById('err-gender').classList.toggle('show', !g); if (!g) ok = false;
+    const bd = getBirthdate(); setErr('birthdate', !bd); if (!bd) ok = false;
+    const gr = document.getElementById('grade').value; setErr('grade', !gr); if (!gr) ok = false;
+    const sc = document.getElementById('school').value; setErr('school', !sc); if (!sc) ok = false;
+  }
+  if (step === 2) {
+    const z = document.getElementById('zip').value.replace(/[^0-9]/g,''); setErr('zip', z.length < 7); if (z.length < 7) ok = false;
+    const a = document.getElementById('address').value.trim(); setErr('address', !a); if (!a) ok = false;
+    const p = document.getElementById('phone').value.replace(/[^0-9]/g,''); setErr('phone', p.length < 10); if (p.length < 10) ok = false;
+    const c = document.querySelector('input[name="course"]:checked'); 
+    document.getElementById('err-course').classList.toggle('show', !c); if (!c) ok = false;
+  }
+  if (step === 3) {
+    const w = document.querySelector('input[name="who"]:checked');
+    document.getElementById('err-who').classList.toggle('show', !w); if (!w) ok = false;
+  }
+  return ok;
+}
+
+// ===== チェックボックス値取得 =====
+function getChecked(prefix) {
+  const vals = [];
+  document.querySelectorAll('input[id^="' + prefix + '"]:checked').forEach(cb => vals.push(cb.value));
+  return vals.join('、');
+}
+
+// ===== 確認画面 =====
+function buildConfirm() {
+  const g = document.querySelector('input[name="gender"]:checked');
+  const c = document.querySelector('input[name="course"]:checked');
+  const w = document.querySelector('input[name="who"]:checked');
+  const groups = [
+    {title:'👦 生徒情報', items:[
+      ['氏名', document.getElementById('name').value],
+      ['ふりがな', document.getElementById('kana').value],
+      ['性別', g ? g.value : ''],
+      ['生年月日', getBirthdateDisplay()],
+      ['学年', document.getElementById('grade').value],
+      ['在学学校', document.getElementById('school').value],
+      ['部活・習い事', document.getElementById('club').value || '—'],
+    ]},
+    {title:'📍 連絡先', items:[
+      ['郵便番号', document.getElementById('zip').value],
+      ['住所', document.getElementById('address').value],
+      ['電話番号', document.getElementById('phone').value],
+      ['希望コース', c ? c.value : ''],
+    ]},
+    {title:'📝 アンケート', items:[
+      ['きっかけ', getChecked('tr-') || '—'],
+      ['ご紹介者', document.getElementById('referrer').value || '—'],
+      ['最初に検討したのは', w ? w.value : ''],
+      ['選んだ理由', getChecked('rs-') || '—'],
+    ]},
+  ];
+  document.getElementById('confirmContent').innerHTML = groups.map(g =>
+    `<div class="review-group"><div class="review-group-title">${g.title}</div><table class="confirm-table">${
+      g.items.map(([l,v]) => `<tr><td>${l}</td><td>${v || '—'}</td></tr>`).join('')
+    }</table></div>`
+  ).join('');
+}
+
+// ===== 送信 =====
+// ★デプロイ後にGoogle Apps ScriptのURLを入れてください
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyNyWe4QXyDqOltB01VjtiqdeGZ0MRkiy5xnrN2QaVusfot7hPSeMmFaEaCkamqTp3Y/exec';
+
+async function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  const loading = document.getElementById('loadingIndicator');
+  btn.disabled = true;
+  loading.style.display = 'block';
+
+  const g = document.querySelector('input[name="gender"]:checked');
+  const c = document.querySelector('input[name="course"]:checked');
+  const w = document.querySelector('input[name="who"]:checked');
+
+  const data = {
+    登録日時: new Date().toLocaleString('ja-JP'),
+    学年: document.getElementById('grade').value,
+    学校名: document.getElementById('school').value,
+    氏名: document.getElementById('name').value.trim(),
+    ふりがな: document.getElementById('kana').value.trim(),
+    生年月日: getBirthdate(),
+    性別: g ? g.value : '',
+    部活習い事: document.getElementById('club').value.trim(),
+    郵便番号: document.getElementById('zip').value,
+    住所: document.getElementById('address').value.trim(),
+    電話番号: document.getElementById('phone').value,
+    希望コース: c ? c.value : '',
+    きっかけ: getChecked('tr-'),
+    最初に検討したのは: w ? w.value : '',
+    選んだ理由: getChecked('rs-'),
+    紹介者: document.getElementById('referrer').value.trim(),
+  };
+
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    loading.style.display = 'none';
+    document.querySelector('.header').style.display = 'none';
+    document.querySelector('.progress-wrap').style.display = 'none';
+    document.querySelector('.container').style.display = 'none';
+    document.getElementById('successPage').classList.add('show');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } catch(e) {
+    loading.style.display = 'none';
+    alert('送信に失敗しました。もう一度お試しください。');
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
