@@ -460,7 +460,7 @@
 <div class="success-page" id="successPage">
   <span class="success-icon">✅</span>
   <h2>受付カードの登録が完了しました。</h2>
-  <p>ご協力ありがとうございました。<br>個別指導ステップ スタッフが確認いたします。</p>
+  <p>ご入力ありがとうございました。<br>個別指導ステップ スタッフが確認いたします。</p>
 </div>
 
 <script>
@@ -471,6 +471,11 @@ function toggleSibling() {
   hasSibling = !hasSibling;
   document.getElementById('sibling-section').classList.toggle('show', hasSibling);
   document.getElementById('sibling-btn-icon').textContent = hasSibling ? '−' : '＋';
+  if (hasSibling) {
+    setTimeout(() => {
+      document.getElementById('sibling-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
 }
 
 // ===== 和暦変換 =====
